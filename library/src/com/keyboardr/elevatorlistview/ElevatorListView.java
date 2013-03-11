@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.database.DataSetObserver;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Interpolator;
@@ -28,21 +27,29 @@ public class ElevatorListView extends ListView {
 				int visibleItemCount, int totalItemCount) {
 			if (visibleItemCount > 0) {
 				int firstTop = view.getChildAt(0).getTop();
-				ListAdapter adapter = getAdapter();
-				while (adapter instanceof WrapperListAdapter) {
-					adapter = ((WrapperListAdapter) adapter)
-							.getWrappedAdapter();
-				}
+				ListAdapter adapter = getWrappedAdapter();
 				for (int i = 0; i < visibleItemCount; i++) {
-					// If the view is not a footer
-					if (firstVisibleItem + i < adapter.getCount()) {
-						switch (i) {
+					int numHeaders = getHeaderViewsCount();
+					final int position = firstVisibleItem + i;
+
+					// If the view is not a header or footer
+					if (position >= numHeaders
+							&& position < numHeaders + adapter.getCount()) {
+						// Don't count headers when determining type of resizing
+						// needed
+						final int numHeadersVisible = Math.max(numHeaders
+								- firstVisibleItem, 0);
+						switch (i - numHeadersVisible) {
 							case 0:
 								setFirstItemHeight(view.getChildAt(i));
 								break;
 							case 1:
-								setSecondItemHeight(view.getChildAt(i),
-										-firstTop);
+								if (numHeadersVisible == 0) {
+									setSecondItemHeight(view.getChildAt(i),
+											-firstTop);
+								} else {
+									setOtherItemHeight(view.getChildAt(i));
+								}
 								break;
 							default:
 								setOtherItemHeight(view.getChildAt(i));
@@ -207,8 +214,6 @@ public class ElevatorListView extends ListView {
 	private void init(Context context, AttributeSet attrs) {
 		TypedArray a = context.obtainStyledAttributes(attrs,
 				R.styleable.ElevatorListView);
-		Log.d(getClass().getSimpleName(), "Size of obtainStyledAttributes(): "
-				+ a.getIndexCount());
 		float density = getResources().getDisplayMetrics().density;
 		mCollapsedItemHeight = a.getDimensionPixelSize(
 				R.styleable.ElevatorListView_collapsedItemHeight,
@@ -234,8 +239,8 @@ public class ElevatorListView extends ListView {
 		mSpacerParams.height = spacerSize;
 		mSpacer.setLayoutParams(mSpacerParams);
 		if (!hasAddedSpacer) {
-			ListAdapter adapter = getAdapter();
-			addFooterView(mSpacer);
+			ListAdapter adapter = getWrappedAdapter();
+			addFooterView(mSpacer, null, false);
 			setAdapter(adapter);
 			hasAddedSpacer = true;
 		}
@@ -274,6 +279,14 @@ public class ElevatorListView extends ListView {
 
 	public int getExpandedItemHeight() {
 		return mExpandedItemHeight;
+	}
+
+	private ListAdapter getWrappedAdapter() {
+		ListAdapter adapter = getAdapter();
+		while (adapter instanceof WrapperListAdapter) {
+			adapter = ((WrapperListAdapter) adapter).getWrappedAdapter();
+		}
+		return adapter;
 	}
 
 	private void updateSizes() {
