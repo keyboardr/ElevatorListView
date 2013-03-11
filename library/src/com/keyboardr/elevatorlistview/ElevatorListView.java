@@ -186,6 +186,14 @@ public class ElevatorListView extends ListView {
 		mExpandedItemHeight = (int) (DEFAULT_EXPANDED_HEIGHT_DP * density);
 	}
 
+	public ElevatorListView(Context context, int collapsedItemHeight,
+			int expandedItemHeight) {
+		super(context);
+		init();
+		mCollapsedItemHeight = collapsedItemHeight;
+		mExpandedItemHeight = expandedItemHeight;
+	}
+
 	public ElevatorListView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		init(context, attrs);
