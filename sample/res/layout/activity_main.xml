@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <com.keyboardr.resizingviewtester.ElevatorListView
+    <com.keyboardr.elevatorlistview.ElevatorListView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,6 +15,6 @@
         android:divider="@null"
         app:collapsedItemHeight="@dimen/collapsed_item_height"
         app:expandedItemHeight="@dimen/expanded_item_height"> 
-    </com.keyboardr.resizingviewtester.ElevatorListView>
+    </com.keyboardr.elevatorlistview.ElevatorListView>
 
 </RelativeLayout>
