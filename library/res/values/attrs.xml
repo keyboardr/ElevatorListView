@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="ElevatorListView">
+        <attr name="collapsedItemHeight" format="dimension" />
+        <attr name="expandedItemHeight" format="dimension" />
+    </declare-styleable>
+
+</resources>

@@ -1,0 +1,6 @@
+<resources>
+    
+    <dimen name="collapsed_item_height">100dp</dimen>
+    <dimen name="expanded_item_height">200dp</dimen>
+
+</resources>
